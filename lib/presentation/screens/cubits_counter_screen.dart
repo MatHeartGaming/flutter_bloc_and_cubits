@@ -19,14 +19,26 @@ class CubitCounterScreen extends StatelessWidget {
 class _CubitCounterView extends StatelessWidget {
   const _CubitCounterView();
 
+  void _increaseCounterBy(BuildContext context, [int value = 1]) {
+    context.read<CounterCubit>().increaseBy(value);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final counterState = context.watch<CounterCubit>().state;
+    //final counterState = context.watch<CounterCubit>().state;
     return Scaffold(
       appBar: AppBar(
-        title: Text("Cubit Counter: ${counterState.transactionCount}"),
+        //title: Text("Cubit Counter: ${counterState.transactionCount}"),
+        title: context.select((CounterCubit value) => 
+          Text("Cubit Counter: ${value.state.transactionCount}")
+        ),
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.refresh_outlined))
+          IconButton(
+              onPressed: () {
+                var state = context.read<CounterCubit>();
+                state.reset();
+              },
+              icon: const Icon(Icons.refresh_outlined))
         ],
       ),
       floatingActionButton: Column(
@@ -34,7 +46,7 @@ class _CubitCounterView extends StatelessWidget {
         children: [
           FloatingActionButton(
             heroTag: '1',
-            onPressed: () => {},
+            onPressed: () => _increaseCounterBy(context, 3),
             child: const Text("+3"),
           ),
           const SizedBox(
@@ -42,7 +54,7 @@ class _CubitCounterView extends StatelessWidget {
           ),
           FloatingActionButton(
             heroTag: '2',
-            onPressed: () => {},
+            onPressed: () => _increaseCounterBy(context, 2),
             child: const Text("+2"),
           ),
           const SizedBox(
@@ -50,7 +62,7 @@ class _CubitCounterView extends StatelessWidget {
           ),
           FloatingActionButton(
             heroTag: '3',
-            onPressed: () => {},
+            onPressed: () => _increaseCounterBy(context, 1),
             child: const Text("+1"),
           ),
         ],
