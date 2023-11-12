@@ -4,11 +4,12 @@ class CustomTextFormField extends StatelessWidget {
   final String? label;
   final String? hint;
   final String? errorMessage;
+  final bool obscureText;
   final Function(String)? onChanged;
   final String? Function(String?)? validator;
 
   const CustomTextFormField(
-      {super.key, this.label, this.hint, this.onChanged, this.validator, this.errorMessage});
+      {super.key, this.label, this.hint, this.onChanged, this.validator, this.errorMessage, this.obscureText = false});
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +20,7 @@ class CustomTextFormField extends StatelessWidget {
     return TextFormField(
       onChanged: onChanged,
       validator: validator,
+      obscureText: obscureText,
       decoration: InputDecoration(
           enabledBorder: border,
           focusedBorder:
