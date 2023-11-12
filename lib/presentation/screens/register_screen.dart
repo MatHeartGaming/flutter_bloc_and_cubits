@@ -1,6 +1,8 @@
 import 'package:blocs_and_cubits/config/constants/regular_expressions.dart';
+import 'package:blocs_and_cubits/presentation/blocs/cubit/register_cubit.dart';
 import 'package:blocs_and_cubits/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RegisterScreen extends StatelessWidget {
   static const name = "RegisterScreen";
@@ -13,7 +15,10 @@ class RegisterScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Nuevo usuario"),
       ),
-      body: const _RegisterView(),
+      body: BlocProvider(
+        create: (BuildContext context) => RegisterCubit(),
+        child: const _RegisterView(),
+      ),
     );
   }
 }
@@ -57,18 +62,19 @@ class _RegisterForm extends StatefulWidget {
 
 class _RegisterFormState extends State<_RegisterForm> {
   final _formKey = GlobalKey<FormState>();
-  String userName = "";
-  String email = "";
-  String password = "";
 
   @override
   Widget build(BuildContext context) {
+    final registerCubit = context.watch<RegisterCubit>();
     return Form(
         key: _formKey,
         child: Column(
           children: [
             CustomTextFormField(
-              onChanged: (value) => userName = value,
+              onChanged: (value) {
+                registerCubit.usernameChanged(value);
+                _formKey.currentState?.validate();
+              },
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
                   return 'Campo requerido';
@@ -82,12 +88,17 @@ class _RegisterFormState extends State<_RegisterForm> {
               height: 20,
             ),
             CustomTextFormField(
-              onChanged: (value) => email = value,
+              onChanged: (value) {
+                registerCubit.emailChanged(value);
+                _formKey.currentState?.validate();
+              },
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
                   return 'Campo requerido';
                 }
-                if (!emailRegExp.hasMatch(value)) return 'No es un correo valido';
+                if (!emailRegExp.hasMatch(value)) {
+                  return 'No es un correo valido';
+                }
                 return null;
               },
               label: "Correo electronico",
@@ -96,7 +107,10 @@ class _RegisterFormState extends State<_RegisterForm> {
               height: 20,
             ),
             CustomTextFormField(
-              onChanged: (value) => password = value,
+              onChanged: (value) {
+                registerCubit.passwordChanged(value);
+                _formKey.currentState?.validate();
+              },
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
                   return 'Campo requerido';
