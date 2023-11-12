@@ -8,3 +8,7 @@ class CounterIncreased extends CounterEvent {
   final int value;
   const CounterIncreased(this.value);
 }
+
+class ResetCounter extends CounterEvent {
+  const ResetCounter();
+}
