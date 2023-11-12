@@ -1,4 +1,3 @@
-import 'package:blocs_and_cubits/config/constants/regular_expressions.dart';
 import 'package:blocs_and_cubits/presentation/blocs/cubit/register_cubit.dart';
 import 'package:blocs_and_cubits/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -53,86 +52,60 @@ class _RegisterView extends StatelessWidget {
   }
 }
 
-class _RegisterForm extends StatefulWidget {
+class _RegisterForm extends StatelessWidget {
   const _RegisterForm();
 
-  @override
-  State<_RegisterForm> createState() => _RegisterFormState();
-}
-
-class _RegisterFormState extends State<_RegisterForm> {
-  final _formKey = GlobalKey<FormState>();
-
+  //final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     final registerCubit = context.watch<RegisterCubit>();
+    final username = registerCubit.state.username;
+    final password = registerCubit.state.password;
+    final email = registerCubit.state.email;
     return Form(
-        key: _formKey,
+        //key: _formKey,
         child: Column(
-          children: [
-            CustomTextFormField(
-              onChanged: (value) {
-                registerCubit.usernameChanged(value);
-                _formKey.currentState?.validate();
-              },
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Campo requerido';
-                }
-                if (value.length < 6) return 'Insertar mas de 6 letras';
-                return null;
-              },
-              label: "Nombre de usuario",
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            CustomTextFormField(
-              onChanged: (value) {
-                registerCubit.emailChanged(value);
-                _formKey.currentState?.validate();
-              },
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Campo requerido';
-                }
-                if (!emailRegExp.hasMatch(value)) {
-                  return 'No es un correo valido';
-                }
-                return null;
-              },
-              label: "Correo electronico",
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            CustomTextFormField(
-              onChanged: (value) {
-                registerCubit.passwordChanged(value);
-                _formKey.currentState?.validate();
-              },
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Campo requerido';
-                }
-                if (value.length < 6) return 'Insertar mas de 6 letras';
-                return null;
-              },
-              label: "Contrasena",
-              obscureText: true,
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            FilledButton.tonalIcon(
-              onPressed: () {
-                final isValid = _formKey.currentState?.validate() ?? false;
-                if (!isValid) return;
-              },
-              icon: const Icon(Icons.save),
-              label: const Text("Crear usuario"),
-            ),
-          ],
-        ));
+      children: [
+        CustomTextFormField(
+          icon: Icons.person,
+          onChanged: registerCubit.usernameStringChanged,
+          errorMessage: username.errorMessage,
+          label: "Nombre de usuario",
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        CustomTextFormField(
+          icon: Icons.email_outlined,
+          errorMessage: email.errorMessage,
+          onChanged: (value) {
+            registerCubit.emailChanged(value);
+          },
+          label: "Correo electronico",
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        CustomTextFormField(
+          icon: Icons.password_rounded,
+          onChanged: registerCubit.passwordStringChanged,
+          errorMessage: password.errorMessage,
+          label: "Contraseña",
+          obscureText: true,
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        FilledButton.tonalIcon(
+          onPressed: () {
+            //final isValid = _formKey.currentState?.validate() ?? false;
+            //if (!isValid) return;
+            registerCubit.onSubmit();
+          },
+          icon: const Icon(Icons.save),
+          label: const Text("Crear usuario"),
+        ),
+      ],
+    ));
   }
 }

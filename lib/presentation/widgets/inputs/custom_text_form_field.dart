@@ -3,13 +3,21 @@ import 'package:flutter/material.dart';
 class CustomTextFormField extends StatelessWidget {
   final String? label;
   final String? hint;
+  final IconData? icon;
   final String? errorMessage;
   final bool obscureText;
   final Function(String)? onChanged;
   final String? Function(String?)? validator;
 
   const CustomTextFormField(
-      {super.key, this.label, this.hint, this.onChanged, this.validator, this.errorMessage, this.obscureText = false});
+      {super.key,
+      this.label,
+      this.hint,
+      this.onChanged,
+      this.validator,
+      this.errorMessage,
+      this.obscureText = false, 
+      this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +37,7 @@ class CustomTextFormField extends StatelessWidget {
           label: Text(label ?? ""),
           hintText: hint,
           prefixIcon: Icon(
-            Icons.supervised_user_circle_outlined,
+            icon,
             color: colors.inversePrimary,
           ),
           focusColor: colors.primary,
